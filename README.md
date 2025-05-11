@@ -52,3 +52,41 @@ python forest_fire_risk_prediction.py
     Feature importance bar chart
 
     Fire risk prediction for a new input sample
+
+
+---
+
+### 🧪 `generate_forest_fire_data.py`
+
+```python
+# generate_forest_fire_data.py
+
+import pandas as pd
+import numpy as np
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate synthetic data
+n_samples = 1000
+temperature = np.random.normal(loc=30, scale=5, size=n_samples)  # °C
+humidity = np.random.normal(loc=50, scale=15, size=n_samples)    # %
+wind = np.random.normal(loc=10, scale=3, size=n_samples)          # km/h
+rain = np.random.exponential(scale=1.0, size=n_samples)           # mm
+
+# Define fire risk: more likely when temp is high, humidity low, rain low, wind high
+fire_risk = ((temperature > 33) & (humidity < 45) & (rain < 1.0) & (wind > 12)).astype(int)
+
+# Create DataFrame
+df = pd.DataFrame({
+    'temperature': temperature.round(2),
+    'humidity': humidity.round(2),
+    'wind': wind.round(2),
+    'rain': rain.round(2),
+    'fire_risk': fire_risk
+})
+
+# Save to CSV
+df.to_csv('forest_fire_data.csv', index=False)
+print("Synthetic dataset saved as 'forest_fire_data.csv'")
+
