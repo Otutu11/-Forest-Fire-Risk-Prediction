@@ -1,0 +1,68 @@
+# forest_fire_risk_prediction.py
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load dataset (replace with your actual dataset)
+# Example columns: 'temperature', 'humidity', 'wind', 'rain', 'fire_risk' (target: 0 = Low, 1 = High)
+df = pd.read_csv('forest_fire_data.csv')
+
+# Preview the data
+print(df.head())
+
+# Check for missing values
+print("Missing values:\n", df.isnull().sum())
+
+# Fill or drop missing values
+df = df.dropna()
+
+# Feature selection
+features = ['temperature', 'humidity', 'wind', 'rain']
+target = 'fire_risk'
+
+X = df[features]
+y = df[target]
+
+# Split into train/test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Build and train the model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+
+# Predict on test set
+y_pred = model.predict(X_test)
+
+# Evaluation
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+# Confusion matrix
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='YlOrBr')
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+# Feature importance plot
+importances = model.feature_importances_
+feat_importance = pd.Series(importances, index=features).sort_values(ascending=False)
+feat_importance.plot(kind='bar', title='Feature Importances')
+plt.ylabel('Importance Score')
+plt.show()
+
+# Predict new sample
+new_data = pd.DataFrame({
+    'temperature': [32],
+    'humidity': [40],
+    'wind': [15],
+    'rain': [0]
+})
+prediction = model.predict(new_data)
+print("Fire Risk Prediction for new sample:", "High" if prediction[0] == 1 else "Low")
