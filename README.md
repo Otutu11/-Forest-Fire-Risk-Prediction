@@ -90,3 +90,6 @@ df = pd.DataFrame({
 df.to_csv('forest_fire_data.csv', index=False)
 print("Synthetic dataset saved as 'forest_fire_data.csv'")
 
+Author Name: Otutu Anslem
+Github: https://github.com/Otutu11/
+LinkedIn: https://www.linkedin.com/in/otutu-anslem-53a687359/
